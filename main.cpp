@@ -14,7 +14,7 @@ public:
     cntrl()
     {
         Audio = "audio.wav";
-        command = "test";
+        command = "testing";
     }
 
     /**
@@ -29,7 +29,7 @@ public:
             if (rand() % chance == 0)
             { // TODO: Make this generate a random effect.
                 // PlaySound(Audio.c_str(), NULL, SND_SYNC | SND_FILENAME);
-                Sleep(500);
+                Sleep(2000);
                 activation();
                 // break;
             }
@@ -49,10 +49,10 @@ private:
     void activation()
     {
         int i = 0;
-        // Why malloc?
         if (inps == NULL)
             inps = (INPUT *)malloc((sizeof(INPUT) + 1) * command.size() * 2);
 
+        // It seems we have to enter each input seperately.
         for (i = 0; i < command.size(); i++)
         {
             inps[0].type = INPUT_KEYBOARD;
@@ -62,6 +62,7 @@ private:
             inps[1].ki.wVk = VkKeyScanA(command.at(i));
             inps[1].ki.dwFlags = KEYEVENTF_KEYUP;
             SendInput(2, inps, sizeof(INPUT));
+            Sleep(1);
         }
 
         inps[0].type = INPUT_KEYBOARD;
