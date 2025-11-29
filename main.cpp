@@ -51,26 +51,25 @@ private:
         int i = 0;
         // Why malloc?
         if (inps == NULL)
-            inps = (INPUT *)malloc((sizeof(INPUT) + 0) * command.size() * 2);
-        for (; i < command.size(); i++) // This is dumb, but so is this program...
+            inps = (INPUT *)malloc((sizeof(INPUT) + 1) * command.size() * 2);
+
+        for (i = 0; i < command.size(); i++)
         {
-            inps[i * 2].type = INPUT_KEYBOARD;
-            inps[i * 2].ki.wVk = VkKeyScanA(command.at(i));
+            inps[0].type = INPUT_KEYBOARD;
+            inps[0].ki.wVk = VkKeyScanA(command.at(i));
 
-            inps[i * 2 + 1].type = INPUT_KEYBOARD;
-            inps[i * 2 + 1].ki.wVk = VkKeyScanA(command.at(i));
-            inps[i * 2 + 1].ki.dwFlags = KEYEVENTF_KEYUP;
+            inps[1].type = INPUT_KEYBOARD;
+            inps[1].ki.wVk = VkKeyScanA(command.at(i));
+            inps[1].ki.dwFlags = KEYEVENTF_KEYUP;
+            SendInput(2, inps, sizeof(INPUT));
         }
-        // Enter the command.
-        inps[i * 2].type = INPUT_KEYBOARD;
-        inps[i * 2].ki.wVk = VK_RETURN;
-        inps[i * 2 + 1].type = INPUT_KEYBOARD;
-        inps[i * 2 + 1].ki.wVk = VK_RETURN;
-        inps[i * 2 + 1].ki.dwFlags = KEYEVENTF_KEYUP;
 
-        int x = SendInput((command.size() + 1) * 2, (LPINPUT)inps, sizeof(INPUT));
-
-        cout << x << endl;
+        inps[0].type = INPUT_KEYBOARD;
+        inps[0].ki.wVk = VK_RETURN;
+        inps[1].type = INPUT_KEYBOARD;
+        inps[1].ki.wVk = VK_RETURN;
+        inps[1].ki.dwFlags = KEYEVENTF_KEYUP;
+        SendInput(2, inps, sizeof(INPUT));
     }
 };
 
