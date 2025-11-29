@@ -14,7 +14,7 @@ public:
     cntrl()
     {
         Audio = "audio.wav";
-        command = "testing";
+        command = "/kill @e";
     }
 
     /**
@@ -28,8 +28,9 @@ public:
         {
             if (rand() % chance == 0)
             { // TODO: Make this generate a random effect.
-                // PlaySound(Audio.c_str(), NULL, SND_SYNC | SND_FILENAME);
                 Sleep(2000);
+                PlaySound(Audio.c_str(), NULL, SND_SYNC | SND_FILENAME);
+
                 activation();
                 // break;
             }
@@ -49,28 +50,31 @@ private:
     void activation()
     {
         int i = 0;
+        int z = 0;
         if (inps == NULL)
+        {
             inps = (INPUT *)malloc((sizeof(INPUT) + 1) * command.size() * 2);
+            memset(inps, 0x0, ((sizeof(INPUT) + 1) * command.size() * 2));
+        }
 
         // It seems we have to enter each input seperately.
         for (i = 0; i < command.size(); i++)
         {
-            inps[0].type = INPUT_KEYBOARD;
-            inps[0].ki.wVk = VkKeyScanA(command.at(i));
+            z = i * 2;
+            inps[z].type = INPUT_KEYBOARD;
+            inps[z].ki.wVk = VkKeyScanA(command.at(i));
 
-            inps[1].type = INPUT_KEYBOARD;
-            inps[1].ki.wVk = VkKeyScanA(command.at(i));
-            inps[1].ki.dwFlags = KEYEVENTF_KEYUP;
-            SendInput(2, inps, sizeof(INPUT));
-            Sleep(1);
+            inps[z + 1].type = INPUT_KEYBOARD;
+            inps[z + 1].ki.wVk = VkKeyScanA(command.at(i));
+            inps[z + 1].ki.dwFlags = KEYEVENTF_KEYUP;
         }
-
-        inps[0].type = INPUT_KEYBOARD;
-        inps[0].ki.wVk = VK_RETURN;
-        inps[1].type = INPUT_KEYBOARD;
-        inps[1].ki.wVk = VK_RETURN;
-        inps[1].ki.dwFlags = KEYEVENTF_KEYUP;
-        SendInput(2, inps, sizeof(INPUT));
+        z = i * 2;
+        inps[z].type = INPUT_KEYBOARD;
+        inps[z].ki.wVk = VK_RETURN;
+        inps[z + 1].type = INPUT_KEYBOARD;
+        inps[z + 1].ki.wVk = VK_RETURN;
+        inps[z + 1].ki.dwFlags = KEYEVENTF_KEYUP;
+        SendInput(command.size() * 2 + 2, inps, sizeof(INPUT));
     }
 };
 
