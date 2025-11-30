@@ -60,11 +60,9 @@ private:
         // It seems we have to enter each input seperately.
         for (i = 0; i < command.size(); i++)
         {
-            z = i * 2;
-            queue_input(z, command.at(i));
+            z = queue_input(z, command.at(i));
         }
-        z = i * 2;
-        queue_input(z, VK_RETURN);
+        z = queue_input(z, VK_RETURN);
         SendInput(command.size() * 2 + 2, inps, sizeof(INPUT));
     }
 
@@ -80,10 +78,12 @@ private:
         int additions = 0;
         inps[location].type = INPUT_KEYBOARD;
         inps[location].ki.wVk = VkKeyScanA(text);
+
         additions++;
 
         inps[location + additions].type = INPUT_KEYBOARD;
         inps[location + additions].ki.wVk = VkKeyScan(text);
+        inps[location + additions].ki.dwFlags = KEYEVENTF_KEYUP;
         additions++;
 
         return additions;
