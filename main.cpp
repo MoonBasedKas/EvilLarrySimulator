@@ -1,10 +1,12 @@
 #include <Windows.h>
 #include <winuser.h>
 #include <stdlib.h>
-#include <time.h>
 #include <stdio.h>
+#include <string>
 #include <iostream>
 #include <cstdlib>
+#include <fstream>
+#include <regex>
 
 using namespace std;
 
@@ -13,8 +15,24 @@ class cntrl
 public:
     cntrl()
     {
-        Audio = "audio.wav";
-        command = "/kill @s";
+        regex rg(":");
+        ifstream file("config.conf");
+        string str;
+
+        while (getline(file, str))
+        {
+            vector<string> parts(sregex_token_iterator(str.begin(), str.end(), rg, -1), sregex_token_iterator());
+            cout << parts.at(0) << endl;
+
+            if (parts.at(0) == "audio")
+            {
+                Audio = parts.at(1);
+            }
+            else if (parts.at(0) == "command")
+            {
+                command = parts.at(1);
+            }
+        }
     }
 
     /**
@@ -39,8 +57,8 @@ public:
 
 private:
     int chance = 1;
-    string Audio;
-    string command; // Replace with a vector for a series of commands.
+    string Audio = "audio.wav";
+    string command = "null"; // Replace with a vector for a series of commands.
     INPUT *inps = NULL;
 
     /**

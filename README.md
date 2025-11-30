@@ -9,9 +9,9 @@ Sadly this is windows only, maybe a linux port in due time however for now remem
 ## Features
 - Audio playback
 - Input
-
-## Future Features
 - Configuration files
 - User selected commands
 - Changable audio
+
+## Future Features
 - Multiple commands
