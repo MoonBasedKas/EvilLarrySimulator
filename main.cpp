@@ -32,6 +32,14 @@ public:
             {
                 command = parts.at(1);
             }
+            else if (parts.at(0) == "chance")
+            {
+                chance = stoi(parts.at(1));
+            }
+            else if (parts.at(0) == "wait")
+            {
+                wait = stoi(parts.at(1));
+            }
         }
     }
 
@@ -45,18 +53,18 @@ public:
         while (1)
         {
             if (rand() % chance == 0)
-            { // TODO: Make this generate a random effect.
-                Sleep(2000);
-                PlaySound(Audio.c_str(), NULL, SND_SYNC | SND_FILENAME); // Ignore this error, it works anyways.
+            {
+                Sleep(wait);
+                // PlaySound(Audio.c_str(), NULL, SND_SYNC | SND_FILENAME); // Ignore this error, it works anyways.
 
                 activation();
-                // break;
             }
         }
     }
 
 private:
     int chance = 1;
+    int wait = 2000;
     string Audio = "audio.wav";
     string command = "null"; // Replace with a vector for a series of commands.
     INPUT *inps = NULL;
