@@ -82,9 +82,9 @@ private:
         {
             for (int i = 0; i < command.size(); i++)
             {
-                acts = queue_input(command.at(i));
+                acts += queue_input(command.at(i));
             }
-            acts = queue_input(VK_RETURN);
+            acts += queue_input(VK_RETURN);
         }
         conv = &actions[0];
         SendInput(acts, conv, sizeof(INPUT));
