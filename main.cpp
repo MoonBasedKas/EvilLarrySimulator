@@ -22,7 +22,6 @@ public:
         while (getline(file, str))
         {
             vector<string> parts(sregex_token_iterator(str.begin(), str.end(), rg, -1), sregex_token_iterator());
-            cout << parts.at(0) << endl;
 
             if (parts.at(0) == "audio")
             {
@@ -63,17 +62,89 @@ public:
     }
 
 private:
+    int acts = 0;
     int chance = 1;
     int wait = 2000;
     string Audio = "audio.wav";
     string command = "null"; // Replace with a vector for a series of commands.
     INPUT *inps = NULL;
+    vector<INPUT> actions;
+
+    /**
+     * @brief Sets up the vector as well as forces the input to be entered.
+     *
+     */
+    void activation()
+    {
+
+        INPUT *conv = NULL;
+        if (actions.size() == 0)
+        {
+            for (int i = 0; i < command.size(); i++)
+            {
+                acts = queue_input(command.at(i));
+            }
+            acts = queue_input(VK_RETURN);
+        }
+        conv = &actions[0];
+        SendInput(acts, conv, sizeof(INPUT));
+    }
+
+    /**
+     * @brief Inputs the provided text character to be entered to the input queue.
+     *
+     * @param text
+     * @return int
+     */
+    int queue_input(char text)
+    {
+        int new_inputs = 0;
+        INPUT *temp = (INPUT *)malloc(sizeof(INPUT));
+        memset(temp, 0x0, sizeof(INPUT));
+        temp->type = INPUT_KEYBOARD;
+        temp->ki.wVk = VkKeyScan(text);
+        actions.push_back(*temp);
+        new_inputs++;
+
+        temp = (INPUT *)malloc(sizeof(INPUT));
+        memset(temp, 0x0, sizeof(INPUT));
+        temp->type = INPUT_KEYBOARD;
+        temp->ki.wVk = VkKeyScan(text);
+        temp->ki.dwFlags = KEYEVENTF_KEYUP;
+        new_inputs++;
+        return new_inputs;
+    }
+
+    /**
+     * @brief Inputs the provided text character to be entered to the input queue.
+     *
+     * @param text
+     * @return int
+     */
+    int queue_input(int text)
+    {
+        int new_inputs = 0;
+        INPUT *temp = (INPUT *)malloc(sizeof(INPUT));
+        memset(temp, 0x0, sizeof(INPUT));
+        temp->type = INPUT_KEYBOARD;
+        temp->ki.wVk = text;
+        actions.push_back(*temp);
+        new_inputs++;
+
+        temp = (INPUT *)malloc(sizeof(INPUT));
+        memset(temp, 0x0, sizeof(INPUT));
+        temp->type = INPUT_KEYBOARD;
+        temp->ki.wVk = text;
+        temp->ki.dwFlags = KEYEVENTF_KEYUP;
+        new_inputs++;
+        return new_inputs;
+    }
 
     /**
      * @brief Enters the programs input.
      *
      */
-    void activation()
+    void old_activation()
     {
         int i = 0;
         int z = 0;
@@ -86,9 +157,9 @@ private:
         // It seems we have to enter each input seperately.
         for (i = 0; i < command.size(); i++)
         {
-            z = queue_input(z, command.at(i));
+            z = old_queue_input(z, command.at(i));
         }
-        z = queue_input(z, VK_RETURN);
+        z = old_queue_input(z, VK_RETURN);
         SendInput(command.size() * 2 + 2, inps, sizeof(INPUT));
     }
 
@@ -99,7 +170,7 @@ private:
      * @param text what input to queue
      * @return int how many inputs have been queued
      */
-    int queue_input(int location, char text)
+    int old_queue_input(int location, char text)
     {
         int additions = 0;
         inps[location].type = INPUT_KEYBOARD;
@@ -122,7 +193,7 @@ private:
      * @param action what input to queue but number
      * @return int how many inputs have been queued.
      */
-    int queue_input(int location, int action)
+    int old_queue_input(int location, int action)
     {
         int additions = 0;
         inps[location].type = INPUT_KEYBOARD;
