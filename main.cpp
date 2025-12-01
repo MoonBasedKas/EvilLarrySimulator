@@ -78,7 +78,7 @@ private:
     {
 
         INPUT *conv = NULL;
-        if (actions.size() == 0)
+        if (acts == 0)
         {
             for (int i = 0; i < command.size(); i++)
             {
