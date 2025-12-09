@@ -111,6 +111,7 @@ private:
         temp->type = INPUT_KEYBOARD;
         temp->ki.wVk = VkKeyScan(text);
         temp->ki.dwFlags = KEYEVENTF_KEYUP;
+        actions.push_back(*temp);
         new_inputs++;
         return new_inputs;
     }
